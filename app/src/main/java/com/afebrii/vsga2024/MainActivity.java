@@ -1,6 +1,9 @@
 package com.afebrii.vsga2024;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,7 +11,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 public class MainActivity extends AppCompatActivity {
+
+    private FloatingActionButton fab;
+    private ListView listView;
+    private MainAdapter adapter;
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,5 +30,24 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        fab = findViewById(R.id.floatingActionButton);
+        fab.setOnClickListener(view -> {
+            Intent i = new Intent(MainActivity.this, TambahActivity.class);
+            startActivity(i);
+        });
+
+        dbHelper = new DBHelper(this);
+
+        listView = findViewById(R.id.listView);
+        adapter = new MainAdapter(this);
+        listView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.clear();
+        adapter.addAll(dbHelper.getData());
     }
 }
